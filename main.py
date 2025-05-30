@@ -417,49 +417,11 @@ def init_database():
 
 # 初期データ投入
 def insert_sample_data():
-    """サンプルデータを投入"""
+    """サンプルデータを挿入"""
     conn = sqlite3.connect('medical_ct.db')
     cursor = conn.cursor()
     
-    cursor.execute("SELECT COUNT(*) FROM sicks")
-    if cursor.fetchone()[0] == 0:
-        sample_sicks = [
-            (10, '大動脈解離', '<h3>大動脈解離とは</h3><p><strong>大動脈解離</strong>とは、大動脈の血管壁が裂け、血液の通り道が、本来のものとは別にもうひとつできた状態です。</p><ul><li>胸や背中に<span style="color: red;">激痛</span>が走る</li><li>大動脈が破裂する可能性</li><li>多くの臓器に障害をもたらす重大な合併症</li></ul>', '胸痛', '胸部～骨盤（2相）', '<h4>撮影手順</h4><ol><li><strong>単純CT</strong>を先に撮影</li><li><strong>動脈相</strong>：造影剤注入開始から25-30秒後</li><li><strong>平衡相</strong>：造影剤注入開始から180秒後</li></ol><p style="color: blue;">💡 呼吸停止の指示を確実に行う</p>', 'MPR　VR', '<h4>画像処理方法</h4><ul><li><strong>MPR（多断面再構成）</strong><ul><li>サジタル面</li><li>コロナル面</li></ul></li><li><strong>VR（ボリュームレンダリング）</strong><ul><li>3D血管像</li><li>解離腔の描出</li></ul></li></ul>', '造影剤100ml 3ml/sec', '<h4>造影プロトコル</h4><p><span style="background-color: yellow;">注意事項：</span></p><ul><li>造影剤：<strong>オムニパーク300</strong> 100ml</li><li>注入速度：<strong>3.0ml/sec</strong></li><li>生理食塩水後押し：30ml</li></ul>', None, None),
-            (11, '虫垂炎', '<h3>虫垂炎（もうちょう）</h3><p><strong>虫垂炎</strong>とは、何らかの原因で虫垂に炎症が起こる病態を指します。</p><p style="color: red;">⚠️ 場合によっては腹膜炎に進行するため、迅速な診断が重要</p>', '右下腹部痛', '胸部～骨盤', '<h4>撮影条件</h4><ol><li><strong>単純CT</strong></li><li><strong>平衡相</strong>：90-120秒後</li></ol><p><em>経口造影剤の使用を検討</em></p>', 'MPR　VR', '<h4>観察ポイント</h4><ul><li>虫垂の腫大</li><li>周囲脂肪織の炎症</li><li>液体貯留の有無</li></ul>', '単純　平衡相', '<p>造影剤使用時：<br><strong>100ml 2.5ml/sec</strong></p>', None, None)
-        ]
-        
-        for sick in sample_sicks:
-            cursor.execute('''
-                INSERT INTO sicks (id, diesease, diesease_text, keyword, protocol, protocol_text, processing, processing_text, contrast, contrast_text)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', sick)
-    
-    cursor.execute("SELECT COUNT(*) FROM forms")
-    if cursor.fetchone()[0] == 0:
-        sample_forms = [
-            (7, '冠動脈CTA検査手順の更新について', '<h3>冠動脈CTA検査手順の更新</h3><p><strong>重要な変更点：</strong></p><ul><li>造影剤の注入速度：<span style="color: red;">5.0ml/sec → 4.5ml/sec</span></li><li>撮影タイミング：<span style="background-color: yellow;">新しいプロトコル追加</span></li></ul><p>詳細は添付の資料をご確認ください。</p>'),
-            (8, '新型CT装置導入のお知らせ', '<h2>新型CT装置導入決定！</h2><p>来月より<strong>最新型320列CT装置</strong>が導入されます。</p><h4>主な特徴：</h4><ol><li>高速撮影が可能</li><li>被ばく線量の大幅削減</li><li>画質の向上</li></ol><p style="color: blue;">📅 <strong>研修会日程は後日お知らせします</strong></p>')
-        ]
-        
-        for form in sample_forms:
-            cursor.execute('''
-                INSERT INTO forms (id, title, main) VALUES (?, ?, ?)
-            ''', form)
-    
-    cursor.execute("SELECT COUNT(*) FROM protocols")
-    if cursor.fetchone()[0] == 0:
-        sample_protocols = [
-            ("頭部", "頭部単純CT", "<h3>頭部単純CT撮影プロトコル</h3><ul><li><strong>スライス厚:</strong> 5mm</li><li><strong>管電圧:</strong> 120kV</li><li><strong>管電流:</strong> 自動露出制御</li><li><strong>撮影範囲:</strong> 頭頂部から後頭孔</li></ul><p style='color: blue;'>💡 頭蓋内出血の検出に最適</p>"),
-            ("胸部", "肺血栓塞栓症CT", "<h3>肺血栓塞栓症CT撮影プロトコル</h3><ul><li><strong>造影剤:</strong> オムニパーク300 100ml</li><li><strong>注入速度:</strong> 4.0ml/sec</li><li><strong>撮影タイミング:</strong> 肺動脈相（15-20秒後）</li><li><strong>再構成:</strong> 1.25mm薄層</li></ul><p style='color: red;'>⚠️ 息止め指示を確実に</p>"),
-            ("腹部", "肝ダイナミックCT", "<h3>肝ダイナミックCT撮影プロトコル</h3><ol><li><strong>単純CT</strong></li><li><strong>動脈相:</strong> 25-30秒後</li><li><strong>門脈相:</strong> 70-80秒後</li><li><strong>平衡相:</strong> 180秒後</li></ol><p><span style='background-color: yellow;'>造影剤: 100ml 3ml/sec</span></p>"),
-            ("特殊", "冠動脈CTA", "<h3>冠動脈CTA撮影プロトコル</h3><ul><li><strong>心拍数制御:</strong> 65bpm以下</li><li><strong>造影剤:</strong> 80-100ml</li><li><strong>注入速度:</strong> 4.5ml/sec</li><li><strong>ECG同期:</strong> 必須</li></ul><p style='color: green;'>✅ 事前のβブロッカー投与確認</p>")
-        ]
-        
-        for protocol in sample_protocols:
-            cursor.execute('''
-                INSERT INTO protocols (category, title, content) VALUES (?, ?, ?)
-            ''', protocol)
-
+    # サンプルユーザーデータ
     sample_users = [
         ("管理者", "admin@hospital.jp", "Okiyoshi1126"),
         ("技師", "tech@hospital.jp", "Tech123")
@@ -470,7 +432,47 @@ def insert_sample_data():
         if cursor.fetchone()[0] == 0:
             cursor.execute("INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
                           (user_data[0], user_data[1], hash_password(user_data[2])))
-
+    
+    # 疾患サンプルデータ（修正版）
+    sample_sicks = [
+        ("脳梗塞", "脳血管が詰まる疾患", "脳梗塞,stroke", "頭部造影CT", "造影剤使用", "緊急検査", "迅速な対応", "あり", "造影剤注入", "", "", "", ""),
+        ("肺炎", "肺の感染症", "肺炎,pneumonia", "胸部CT", "単純CT", "標準撮影", "呼吸停止", "なし", "造影不要", "", "", "", "")
+    ]
+    
+    for sick in sample_sicks:
+        cursor.execute("SELECT COUNT(*) FROM sicks WHERE diesease = ?", (sick[0],))
+        if cursor.fetchone()[0] == 0:
+            # 修正：全ての列を明示的に指定（idは自動採番のため除外）
+            cursor.execute('''
+                INSERT INTO sicks (
+                    diesease, diesease_text, keyword, protocol, protocol_text,
+                    processing, processing_text, contrast, contrast_text,
+                    diesease_img, protocol_img, processing_img, contrast_img
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', sick)
+    
+    # お知らせサンプルデータ
+    sample_forms = [
+        ("システム運用開始", "CT医療システムの運用を開始しました。", ""),
+        ("利用方法について", "疾患検索機能をご活用ください。", "")
+    ]
+    
+    for form in sample_forms:
+        cursor.execute("SELECT COUNT(*) FROM forms WHERE title = ?", (form[0],))
+        if cursor.fetchone()[0] == 0:
+            cursor.execute("INSERT INTO forms (title, main, post_img) VALUES (?, ?, ?)", form)
+    
+    # CTプロトコルサンプルデータ
+    sample_protocols = [
+        ("頭部", "頭部単純CT", "スライス厚: 5mm\n電圧: 120kV\n電流: 250mA", ""),
+        ("胸部", "胸部造影CT", "スライス厚: 1mm\n電圧: 120kV\n造影剤: 100ml", "")
+    ]
+    
+    for protocol in sample_protocols:
+        cursor.execute("SELECT COUNT(*) FROM protocols WHERE title = ? AND category = ?", (protocol[1], protocol[0]))
+        if cursor.fetchone()[0] == 0:
+            cursor.execute("INSERT INTO protocols (category, title, content, protocol_img) VALUES (?, ?, ?, ?)", protocol)
+    
     conn.commit()
     conn.close()
 
